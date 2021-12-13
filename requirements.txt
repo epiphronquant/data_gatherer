@@ -1,8 +1,10 @@
 streamlit==0.84.2
 pandas
+numpy
 selenium
 seleniumbase
 lxml
 html5lib
 xlsxwriter
 multitasking
+beautifulsoup4
