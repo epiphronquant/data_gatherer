@@ -10,7 +10,7 @@ import scraper_formulas as xf
 from time import sleep
 ### configure page
 st.set_page_config(layout="wide")
-st.title('XueQiu Downloader')
+st.title('Data Downloader')
 
 column_1, column_2 = st.beta_columns(2) ### Divides page into 2 columns
 with column_1:### ### Download Statements chart
