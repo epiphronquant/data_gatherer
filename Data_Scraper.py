@@ -27,7 +27,7 @@ with column_1:### ### Download Statements chart
       'What frequency would the data be? This is irrelevant for shareholder info',
       ('全部','年报', '中报', '一季报', '三季报'))
     st.write('You selected:', freq)
-    @st.cache
+    @st.cache (ttl=300)
     def download(tickers, statement, freq):
         if tickers == ['']:### Makes function not run if there is no input
             tables = pd.DataFrame()
@@ -84,7 +84,7 @@ with column_2:##### Download various information chart
     tickers2 = tickers2.split(',') 
     tickers2 = map(str.strip, tickers2)
     tickers2 = list(tickers2)
-    @st.cache
+    @st.cache (ttl=300)
     def hkex(tickers2):
         if tickers2 == ['']:
             tables2 = pd.DataFrame()
@@ -119,7 +119,7 @@ statement3 = st.selectbox(
          'What would you like to download?',
          ('Stock Data', 'Company Data'))
 st.write('You selected:', statement3)
-@st.cache
+@st.cache (ttl=300)
 def download_various (tickers3, statement3):
     if tickers3 == ['']:### makes sure the function doesn't run if there is no data inputted
         tables3 = pd.DataFrame()
