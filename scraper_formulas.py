@@ -325,6 +325,7 @@ def string_to_float(string):
 def threaded_gather_data(ticker, output):
     driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options) ### use google chrome
     url = 'https://www.hkex.com.hk/Market-Data/Securities-Prices/Equities/Equities-Quote?sym=' + str(ticker) +'&sc_lang=en'
+    url = 'https://www.hkex.com.hk/Market-Data/Securities-Prices/Equities/Equities-Quote?sym=' + str(ticker) +'&sc_lang=en'
     driver.get(url) ### go to website
     sleep(1) ### gives time for page to load. This is a xueqiu specific solution
     html = driver.page_source ## gather and read HTML       
@@ -332,8 +333,10 @@ def threaded_gather_data(ticker, output):
     
     soup = BeautifulSoup(html, 'html.parser')   
     summary = soup.find(class_= "company_txt col_summary")
-    summary = summary.get_text()
-    
+    try:
+        summary = summary.get_text()
+    except AttributeError:
+        summary = ''
     shr_out = soup.find(class_= "col_issued_shares")
     ####!! We assume there will only ever be 2 classes of shares for WVR!!##
     try: 
@@ -366,6 +369,7 @@ def threaded_gather_data(ticker, output):
         shr_out = int(shr_out)
     industry = soup.find(class_= "col_industry_hsic")
     industry = industry.get_text()
+    industry = industry.replace('E-Commerce', 'E_Commerce')
     industry = industry.split('-')
     industry = [i.strip(' ') for i in industry]
     industry1 = industry [0]
@@ -400,54 +404,78 @@ def threaded_gather_data(ticker, output):
     
     current_price = left_list_title.find(class_= "col_last")
     current_price = current_price.get_text()
-    current_price = float(current_price)
+    try:
+        current_price = float(current_price)
+    except ValueError:
+        pass
     
     prevcls = soup.find(class_= "ico_data col_prevcls")
     prevcls = prevcls.get_text()
     prevcls = prevcls.replace('HK$','')
     prevcls = prevcls.replace('HKD','')
-    prevcls = float(prevcls)
+    try:
+        prevcls = float(prevcls)
+    except KeyError:
+        pass
     
     open_ = soup.find(class_= "ico_data col_open")
     open_ = open_.get_text()
     open_ = open_.replace('HK$','')
-    open_ = float(open_)
+    try:
+        open_ = float(open_)
+    except ValueError:
+        pass
     
     turnover = soup.find(class_= "ico_data col_turnover")
     turnover = turnover.get_text()
     turnover = turnover.replace('HK$','')
     turnover = turnover.replace(',','')
-    turnover = string_to_float(turnover)
-    
+    try:
+        turnover = string_to_float(turnover)
+    except KeyError:
+        pass
     
     volume = soup.find(class_= "ico_data col_volume")
     volume = volume.get_text()
     volume = volume.replace(',','')
-    volume = string_to_float(volume)
-    
+    try:
+        volume = string_to_float(volume)
+    except KeyError:
+        pass
     mktcap = soup.find(class_= "ico_data col_mktcap")
     mktcap = mktcap.get_text()
     mktcap = mktcap.replace('HK$','')
     mktcap = mktcap.replace(',','')
-    mktcap = string_to_float(mktcap)
-    
+    try:
+        mktcap = string_to_float(mktcap)
+    except KeyError:
+        pass
     lotsize = soup.find(class_= "ico_data col_lotsize")
     lotsize = lotsize.get_text()
     lotsize = lotsize.replace('HK$','')
     lotsize = lotsize.replace(',','')
-    lotsize = int(lotsize)
+    try:
+        lotsize = int(lotsize)
+    except ValueError:
+        pass
     
     bid = soup.find(class_= "ico_data col_bid")
     bid = bid.get_text()
     bid = bid.replace('HK$','')
     bid = bid.replace(',','')
-    bid = float(bid)
+    try:
+        bid = float(bid)
+    except ValueError:
+        pass
     
     ask = soup.find(class_= "ico_data col_ask")
     ask = ask.get_text()
     ask = ask.replace('HK$','')
     ask = ask.replace(',','')
-    ask = float(ask)
+    try:
+        ask = float(ask)
+    except ValueError:
+        pass
     
     eps = soup.find(class_= "ico_data col_eps")
     eps = eps.get_text()
@@ -467,13 +495,19 @@ def threaded_gather_data(ticker, output):
     high52 = high52.get_text()
     high52 = high52.replace('HK$','')
     high52 = high52.replace(',','')
-    high52 = float(high52)
+    try:
+        high52 = float(high52)
+    except ValueError:
+        pass
     
     low52 = soup.find(class_= "col_low52")
     low52 = low52.get_text()
     low52 = low52.replace('HK$','')
     low52 = low52.replace(',','')
-    low52 = float(low52)
+    try:
+        low52 = float(low52)
+    except ValueError:
+        pass
     
     abc = [["ticker", ticker],["name",name],["class_a_shr", shr_out1],["class_b_shr",shr_out2], ["ask", ask],["bid", bid],["chairman", chairman],["current_price", current_price],["divyield", divyield],["eps", eps],["fy_end", fy_end],["high52", high52],["industry1", industry1], ["industry2", industry2], ["industry3", industry3],["list_date", list_date],["listing_cat", listing_cat],["lotsize", lotsize],["low52", low52],["mktcap", mktcap],["office", office],["open_", open_],["pe", pe],["poi", poi],["prevcls", prevcls],["shr_out", shr_out],["summary", summary],["turnover", turnover],["volume", volume]]
     abcd = pd.DataFrame(abc)
