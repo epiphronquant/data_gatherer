@@ -148,6 +148,10 @@ def convert(chinese):
                         base, currentUnit = base * units[chinese[j]], chinese[j]
             number = number + base
     return number
+def chin_str_split(s):
+    tail = s.lstrip('0123456789.')
+    head = s[:-len(tail)]
+    return head, tail
 def convert_table(table):
     """coverts everything beyond the first column with chinese numbers to raw int number
     in: dataframe 
@@ -156,8 +160,13 @@ def convert_table(table):
     columns = table.columns [1:]
     for column in columns:
         abc = table [column]
-        abc2 = abc.str[-1]
-        abc = abc.str[:-1]   
+
+        abc3 = pd.DataFrame(chin_str_split(s) for s in abc)
+        abc2 = abc3.iloc [:,1]
+        abc = abc3.iloc [:,0]
+
+        # abc2 = abc.str[-1]
+        # abc = abc.str[:-1]   
         abc2 = '一' + abc2
         abc2 = abc2.astype(str)
         a = []
@@ -219,8 +228,14 @@ def infinite_query_threaded_shareholder(ticker1,tables2, xq_exten):
         report = report [0]
         table.columns = table.columns.droplevel()
         abc = table ['持股数量']
-        abc2 = abc.str[-1]
-        abc = abc.str[:-1]   
+        
+        abc3 = pd.DataFrame(chin_str_split(s) for s in abc)
+        abc2 = abc3.iloc [:,1]
+        abc = abc3.iloc [:,0]
+
+        # abc2 = abc.str[-1]
+        # abc = abc.str[:-1]   
+        
         abc2 = '一' + abc2
         a = []
         for numbers in abc2:
