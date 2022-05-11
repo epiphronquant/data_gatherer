@@ -151,7 +151,7 @@ def convert(chinese):
             number = number + base
     return number
 def chin_str_split(s):
-    tail = s.lstrip('0123456789.')
+    tail = s.lstrip('-0123456789.')
     head = s[:-len(tail)]
     return head, tail
 def convert_table(table):
