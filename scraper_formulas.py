@@ -10,9 +10,11 @@ import base64
 from io import BytesIO
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import multitasking
 from bs4 import BeautifulSoup
+
 
 ### Options that allow chrome to run in streamlit
 chrome_options = Options()
@@ -24,7 +26,7 @@ def infinite_query(ticker, xq_exten, sleep_time,  freq = "全部",  stock_data =
     in: str, str, int, str, bool, bool
     out: dataframe or list of dataframes
     '''
-    driver = webdriver.Chrome(options=chrome_options) ### use google chrome
+    driver = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options) ### use google chrome
     driver.get("https://xueqiu.com/snowman/S/" + ticker + xq_exten) ### go to website
     sleep(1) ### gives time for page to load
     if stock_data == True: ### This is for gathering HKEX stock data
@@ -319,7 +321,7 @@ def string_to_float(string):
 
 @multitasking.task
 def threaded_gather_data(ticker, output):
-    driver = webdriver.Chrome(options=chrome_options) ### use google chrome
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options) ### use google chrome
     url = 'https://www.hkex.com.hk/Market-Data/Securities-Prices/Equities/Equities-Quote?sym=' + str(ticker) +'&sc_lang=en'
     driver.get(url) ### go to website
     sleep(1) ### gives time for page to load. This is a xueqiu specific solution
