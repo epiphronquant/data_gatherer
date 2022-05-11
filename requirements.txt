@@ -8,3 +8,4 @@ html5lib
 xlsxwriter
 multitasking
 beautifulsoup4
+webdriver-manager
