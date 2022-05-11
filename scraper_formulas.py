@@ -162,7 +162,8 @@ def convert_table(table):
     columns = table.columns [1:]
     for column in columns:
         abc = table [column]
-
+        
+        abc = abc.astype(str)
         abc3 = pd.DataFrame(chin_str_split(s) for s in abc)
         abc2 = abc3.iloc [:,1]
         abc = abc3.iloc [:,0]
@@ -230,7 +231,8 @@ def infinite_query_threaded_shareholder(ticker1,tables2, xq_exten):
         report = report [0]
         table.columns = table.columns.droplevel()
         abc = table ['持股数量']
-        
+        abc = abc.astype(str)
+
         abc3 = pd.DataFrame(chin_str_split(s) for s in abc)
         abc2 = abc3.iloc [:,1]
         abc = abc3.iloc [:,0]
