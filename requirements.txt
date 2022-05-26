@@ -9,3 +9,4 @@ xlsxwriter
 multitasking
 beautifulsoup4
 webdriver-manager
+protobuf==3.21
